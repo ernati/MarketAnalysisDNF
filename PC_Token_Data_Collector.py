@@ -1,23 +1,22 @@
-# -*- coding: cp949 -*-
 import os
 import json
 import requests
 from urllib import parse
 from datetime import datetime
 
-# ·Î±× ÆÄÀÏ ÀÛ¼º ÇÔ¼ö
+# ë¡œê·¸ íŒŒì¼ ì‘ì„± í•¨ìˆ˜
 def log_message(message):
     log_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    log_folder = "D:\\Data\\atmosphere\\Rawinsonde\\logs"
+    log_folder = "D:\\Data\\MarketAnalysis\\DNF\\PC_Token\\Log"
     os.makedirs(log_folder, exist_ok=True)
     log_file_path = os.path.join(log_folder, "data_log.txt")
     with open(log_file_path, 'a', encoding='utf-8') as log_file:
         log_file.write(f"{log_time} : {message}\n")
 
-# API¸¦ ÅëÇØ µ¥ÀÌÅÍ¸¦ °¡Á®¿À´Â ÇÔ¼ö
+# API ê²°ê³¼ë¥¼ JSON í˜•íƒœë¡œ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
 def get_api_data():
     get_param = {
-        'itemName': 'pc¹æ',
+        'itemName': 'pcë°©',      # í•„ìš”ì— ë”°ë¼ ì˜¬ë°”ë¥¸ ì•„ì´í…œëª…ì„ ì…ë ¥í•˜ì„¸ìš”.
         'wordType': 'front',
         'wordShort': '<wordShort>',
         'limit': 100,
@@ -27,36 +26,36 @@ def get_api_data():
     url = "https://api.neople.co.kr/df/auction-sold?%s" % (get_param)
     print(url)
 
-    response = requests.get(url)  # GET ¿äÃ»
+    response = requests.get(url)  # GET ìš”ì²­
 
-    # API ÀÀ´äÀÌ JSON Çü½ÄÀÌ¶ó°í °¡Á¤ÇÏ°í ÆÄ½ÌÇÕ´Ï´Ù.
+    # API ì‘ë‹µì„ JSON ê°ì²´ë¡œ ë³€í™˜
     data = response.json()
 
-    # ¿¹¸¦ µé¾î, ÀÀ´ä ±¸Á¶°¡ {"rows": [ ... ]} ÇüÅÂ¶ó¸é ¾Æ·¡¿Í °°ÀÌ Ã³¸®ÇÒ ¼ö ÀÖ½À´Ï´Ù.
+    # ì‘ë‹µ ë°ì´í„° ì¤‘, ê²°ê³¼ê°€ {"rows": [ ... ]} í˜•ì‹ìœ¼ë¡œ ë‹´ê²¨ ìˆëŠ” ê²½ìš° í•´ë‹¹ ë¶€ë¶„ë§Œ ì¶”ì¶œí•˜ì—¬ ë°˜í™˜í•©ë‹ˆë‹¤.
     result = data.get("rows", [])
-    # ¸¸¾à ÀÀ´äÀÌ ÃÖ»óÀ§ ¸®½ºÆ®¶ó¸é ±×³É data¸¦ ±×´ë·Î ¸®ÅÏÇÕ´Ï´Ù.
-    # result = data  # ÀÀ´äÀÌ ¸®½ºÆ®¶ó°í °¡Á¤
+    # ë˜ëŠ” ì‘ë‹µ ë°ì´í„°ê°€ ë°”ë¡œ ë°°ì—´ í˜•íƒœë¡œ ë°˜í™˜ë˜ëŠ” ê²½ìš° data ê·¸ëŒ€ë¡œ ì‚¬ìš©í•©ë‹ˆë‹¤.
+    # result = data  # ì‘ë‹µ ë°ì´í„°ê°€ ë°°ì—´ì¸ ê²½ìš°
 
-    # result´Â ÀÌ¹Ì JSON °´Ã¼(µñ¼Å³Ê¸®)µéÀ» ´ãÀº ¸®½ºÆ®ÀÔ´Ï´Ù.
+    # resultë¥¼ ê·¸ëŒ€ë¡œ JSON ê°ì²´(ë¦¬ìŠ¤íŠ¸) í˜•íƒœë¡œ ë°˜í™˜í•©ë‹ˆë‹¤.
     return result
 
-# API·ÎºÎÅÍ µ¥ÀÌÅÍ Á¶È¸
+# APIë¥¼ í†µí•´ ë°ì´í„° ì¡°íšŒ
 data = get_api_data()
 
 if data is not None:
-    # ÇöÀç ½Ã°£À» 'YYYYMMDD_HHMMSS' Çü½ÄÀ¸·Î ÃßÃâÇÏ¿© Æú´õ¸í ¹× ÆÄÀÏ¸í »ı¼º
+    # í˜„ì¬ ì‹œê°„ì„ 'YYYYMMDD_HHMMSS' í˜•ì‹ìœ¼ë¡œ ì¶”ì¶œ
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    folder_name = f"D:\\ta\\MarketAnalysis\\DNF\\PC_Token\\{current_time}"
+    # folder_name = f"D:\\Data\\MarketAnalysis\\DNF\\PC_Token\\{current_time}"
+    folder_name = "D:\\Data\\MarketAnalysis\\DNF\\PC_Token\\Data"
     os.makedirs(folder_name, exist_ok=True)
     file_path = os.path.join(folder_name, f"{current_time}_data.txt")
     
-    # JSON µ¥ÀÌÅÍ¸¦ ÆÄÀÏ¿¡ ÀúÀå (ÇÑ±ÛÀÌ ±úÁöÁö ¾Êµµ·Ï ensure_ascii=False)
+    # JSON í˜•íƒœë¡œ ì €ì¥ (í•œê¸€ì´ ê¹¨ì§€ì§€ ì•Šë„ë¡ ensure_ascii=False)
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
     
-    print(f"µ¥ÀÌÅÍ°¡ '{file_path}'¿¡ ÀúÀåµÇ¾ú½À´Ï´Ù.")
+    print(f"ë°ì´í„°ê°€ '{file_path}'ì— ì €ì¥ë˜ì—ˆìŠµë‹ˆë‹¤.")
     log_message("Data Save Success!")
 else:
-    print("API µ¥ÀÌÅÍ Á¶È¸ ½ÇÆĞ")
+    print("API ë°ì´í„° ì¡°íšŒ ì‹¤íŒ¨")
     log_message("Data Save Fail!")
-
